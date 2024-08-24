@@ -21,6 +21,93 @@ USER_FILE = "users.txt"
 # File to store command logs
 LOG_FILE = "log.txt"
 
+# Command handler for /vayu
+@bot.message_handler(commands=["vayu"])
+def handle_vayu(message):
+    user_id = str(message.chat.id)
+    if user_id in admin_id:
+        response = """🔧 Admin Necessary Commands:
+        
+1. /check_server: Executes the check_server function.
+2. /add <userId> <duration>: Provides usage instructions for adding a user.
+3. /remove <userId>: Provides usage instructions for removing a user.
+4. /clearusers: Clears users.
+5. /allusers: Shows all users.
+6. /stop_ongoing: Stops the ongoing process.
+7. /check_process_with_bgmi: Checks the process with bgmi.
+
+Please reply with the number of the command you want to execute (e.g., 1 for /check_server).""
+
+"Buy From :- @ServerHacker69"""
+        bot.reply_to(message, response)
+
+# Command handler for handling command selection
+@bot.message_handler(func=lambda message: message.text.isdigit())
+def handle_command_selection(message):
+    user_id = str(message.chat.id)
+    if user_id in admin_id:
+        command_number = int(message.text)
+
+        if command_number == 1:
+            handle_check_server(message)
+        elif command_number == 2:
+            bot.reply_to(message, "Please reply with the command in the format: /add <userId> <duration> (e.g., /add 123456789 2days)")
+            bot.register_next_step_handler(message, handle_add_user)
+        elif command_number == 3:
+            bot.reply_to(message, "Please reply with the command in the format: /remove <userId> (e.g., /remove 123456789)")
+            bot.register_next_step_handler(message, handle_remove_user)
+        elif command_number == 4:
+            handle_clear_users(message)
+        elif command_number == 5:
+            handle_all_users(message)
+        elif command_number == 6:
+            handle_stop_ongoing(message)
+        elif command_number == 7:
+            handle_check_process_with_bgmi(message)
+        else:
+            bot.reply_to(message, "Invalid selection. Please select a number from the list.")
+    else:
+        bot.reply_to(message, "You are not authorized to execute this command.")
+
+# Helper functions for each command
+def handle_check_server(message):
+    # Call your existing /check_server function
+    check_server_free_test(message)
+
+def handle_add_user(message):
+    command = message.text.split()
+    if len(command) == 3:
+        user_to_add = command[1]
+        duration_str = command[2]
+        # Call your existing /add command logic
+        add_user_command_logic(user_to_add, duration_str)
+    else:
+        bot.reply_to(message, "Invalid format. Use /add <userId> <duration>.")
+
+def handle_remove_user(message):
+    command = message.text.split()
+    if len(command) == 2:
+        user_to_remove = command[1]
+        # Call your existing /remove command logic
+        remove_user_command_logic(user_to_remove)
+    else:
+        bot.reply_to(message, "Invalid format. Use /remove <userId>.")
+
+def handle_clear_users(message):
+    # Call your existing /clearusers command logic
+    clear_users_command(message)
+
+def handle_all_users(message):
+    # Call your existing /allusers command logic
+    show_all_users(message)
+
+def handle_stop_ongoing(message):
+    # Call your existing /stop_ongoing command logic
+    kill_processes_with_bgmi(message)
+
+def handle_check_process_with_bgmi(message):
+    # Call your existing /check_process_with_bgmi command logic
+    check_process_with_bgmi()
 
 # Function to read user IDs from the file
 def read_users():
@@ -314,7 +401,7 @@ def start_attack_reply(message, target, port, time):
     user_info = message.from_user
     username = user_info.username if user_info.username else user_info.first_name
 
-    response = f"{username}, 𝐀𝐓𝐓𝐀𝐂𝐊 𝐒𝐓𝐀𝐑𝐓𝐄𝐃.🔥🔥\n\n𝐓𝐚𝐫𝐠𝐞𝐭: {target}\n𝐏𝐨𝐫𝐭: {port}\n𝐓𝐢𝐦𝐞: {time} 𝐒𝐞𝐜𝐨𝐧𝐝𝐬\n𝐌𝐞𝐭𝐡𝐨𝐝: VIP- @lipstickeraservishal"
+    response = f"{username}, 𝐀𝐓𝐓𝐀𝐂𝐊 𝐒𝐓𝐀𝐑𝐓𝐄𝐃.🔥🔥\n\n𝐓𝐚𝐫𝐠𝐞𝐭: {target}\n𝐏𝐨𝐫𝐭: {port}\n𝐓𝐢𝐦𝐞: {time} 𝐒𝐞𝐜𝐨𝐧𝐝𝐬\n𝐌𝐞𝐭𝐡𝐨𝐝: VIP- @ServerHacker69"
     bot.reply_to(message, response)
 
 
@@ -369,7 +456,7 @@ def handle_bgmi(message):
                 "✅ Usage :- /bgmi <target> <port> <time>"  # Updated command syntax
             )
     else:
-        response = "🚫 Unauthorized Access! 🚫\n\nOops! It seems like you don't have permission to use the /bgmi command. DM TO BUY ACCESS:- @lipstickeraservishal"
+        response = "🚫 Unauthorized Access! 🚫\n\nOops! It seems like you don't have permission to use the /bgmi command. DM TO BUY ACCESS:- @ServerHacker69"
 
     bot.reply_to(message, response)
 
@@ -459,7 +546,7 @@ def show_help(message):
 🤖 To See Admin Commands:
 💥 /admincmd : Shows All Admin Commands.
 
-Buy From :- @lipstickeraservishal
+Buy From :- @ServerHacker69
 """
     for handler in bot.message_handlers:
         if hasattr(handler, "commands"):
@@ -477,7 +564,7 @@ def welcome_start(message):
     user_name = message.from_user.first_name
     response = f"""❄️ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴘʀᴇᴍɪᴜᴍ ᴅᴅᴏs ʙᴏᴛ, {user_name}! ᴛʜɪs ɪs ʜɪɢʜ ǫᴜᴀʟɪᴛʏ sᴇʀᴠᴇʀ ʙᴀsᴇᴅ ᴅᴅᴏs. ᴛᴏ ɢᴇᴛ ᴀᴄᴄᴇss.
 🤖Try To Run This Command : /help
-✅BUY :- @lipstickeraservishal"""
+✅BUY :- @ServerHacker69"""
     bot.reply_to(message, response)
 
 
